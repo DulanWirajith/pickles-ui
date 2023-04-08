@@ -1,4 +1,4 @@
-export const BASE_URL = "http://localhost:4040";
+export const BASE_URL = "http://localhost:3000";
 export const BASE_API_URL = `${BASE_URL}`;
 
 export const apis = {

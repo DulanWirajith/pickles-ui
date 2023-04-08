@@ -1,7 +1,7 @@
 import Head from "next/head";
 import {Header} from "@/components/organisms/header.organism";
-import {notification, Table} from "antd";
-import {useEffect, useState} from "react";
+import {notification, Table, Tag} from "antd";
+import React, {useEffect, useState} from "react";
 import {apis} from "@/properties";
 import {GetData} from "@/api-service/get-data";
 import {ExclamationCircleOutlined} from "@ant-design/icons";
@@ -25,66 +25,35 @@ export default function Email() {
         setPaginationConfig(newPaginationConfig);
     };
 
-    const dataSource = [
-        {
-            key: '1',
-            name: 'Mike',
-            age: 32,
-            address: '10 Downing Street',
-        },
-        {
-            key: '2',
-            name: 'John',
-            age: 42,
-            address: '10 Downing Street',
-        },
-        {
-            key: '3',
-            name: 'Mike',
-            age: 32,
-            address: '10 Downing Street',
-        },
-        {
-            key: '4',
-            name: 'John',
-            age: 42,
-            address: '10 Downing Street',
-        },
-        {
-            key: '5',
-            name: 'John',
-            age: 42,
-            address: '10 Downing Street',
-        },
-        {
-            key: '6',
-            name: 'Mike',
-            age: 32,
-            address: '10 Downing Street',
-        },
-        {
-            key: '7',
-            name: 'John',
-            age: 42,
-            address: '10 Downing Street',
-        },
-    ];
-
     const columns = [
         {
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
+            title: 'To Mail',
+            dataIndex: 'to',
+            key: 'to',
         },
         {
-            title: 'Age',
-            dataIndex: 'age',
-            key: 'age',
+            title: 'Email Type',
+            dataIndex: 'type',
+            key: 'type',
         },
         {
-            title: 'Address',
-            dataIndex: 'address',
-            key: 'address',
+            title: 'External Id',
+            dataIndex: 'externalId',
+            key: 'externalId',
+        },
+        {
+            title: 'Attempts Count',
+            dataIndex: 'attemptsCount',
+            key: 'attemptsCount',
+        },
+        {
+            title: 'Final Status',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status: string) => {
+                return status === 'SUCCESS' ? <Tag className='text-green-500'>{status}</Tag> : status === 'FAILED' ?
+                    <Tag className='text-red-500'>{status}</Tag> : <Tag className='text-yellow-500'>{status}</Tag>
+            }
         },
     ];
 
