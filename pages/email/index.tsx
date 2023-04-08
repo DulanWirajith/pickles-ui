@@ -65,7 +65,14 @@ export default function Email() {
         })
             .then((result: any) => {
                 let responseJson = result;
-                setData(responseJson.content);
+                const dataWithKey = responseJson.content.map((item: any) => {
+                        return {
+                            ...item,
+                            key: item.id,
+                        }
+                    }
+                );
+                setData(dataWithKey);
                 setPaginationConfig({
                     ...paginationConfig,
                     total: responseJson.totalElements,
