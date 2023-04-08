@@ -1,8 +1,25 @@
 import Head from "next/head";
 import {Header} from "@/components/organisms/header.organism";
 import {Table} from "antd";
+import {useEffect, useState} from "react";
 
 export default function Email() {
+    const [isPaginationChanged, setIsPaginationChanged] = useState(false);
+    const [paginationConfig, setPaginationConfig] = useState({
+        total: 0,
+        defaultPageSize: 10,
+        pageSize: 5,
+        current: 1,
+    });
+    const onPaginationChange = (page: number, pageSize?: number) => {
+        const newPaginationConfig = {...paginationConfig, current: page};
+        if (pageSize) {
+            newPaginationConfig.pageSize = pageSize;
+        }
+        setIsPaginationChanged(!isPaginationChanged);
+        setPaginationConfig(newPaginationConfig);
+    };
+
     const dataSource = [
         {
             key: '1',
@@ -66,6 +83,10 @@ export default function Email() {
         },
     ];
 
+    useEffect(() => {
+        console.log(paginationConfig)
+    }, [isPaginationChanged]);
+
     return (
         <>
             <Head>
@@ -76,9 +97,16 @@ export default function Email() {
                 <div className='p-4'>
                     <Table dataSource={dataSource} columns={columns}
                            className="mt-0 mb-5"
+                        // loading={true}
+                           pagination={{
+                               ...paginationConfig,
+                               defaultCurrent: 1,
+                               onChange: onPaginationChange,
+                           }}
                     />;
                 </div>
             </main>
         </>
     )
 }
+
