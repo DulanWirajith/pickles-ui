@@ -11,7 +11,7 @@ export default function Home() {
                 <title>Pickles UI</title>
             </Head>
             <main className="bg-gray-100 min-h-screen">
-                <Header/>
+                <Header headerName={'Dashboard'}/>
             </main>
         </>
     )

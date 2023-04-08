@@ -14,7 +14,7 @@ export const Sidebar = ({children}: { children: React.ReactNode }) => {
                         </div>
                     </Link>
                     <span className='border-b-[1px] border-gray-200 w-full p-2'></span>
-                    <Link href='/emails'>
+                    <Link href='/email'>
                         <SidebarLink name={'View Emails'}/>
                     </Link>
                 </div>
