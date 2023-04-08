@@ -1,16 +1,21 @@
 import Head from "next/head";
 import {Header} from "@/components/organisms/header.organism";
-import {Table} from "antd";
+import {notification, Table} from "antd";
 import {useEffect, useState} from "react";
+import {apis} from "@/properties";
+import {GetData} from "@/api-service/get-data";
+import {ExclamationCircleOutlined} from "@ant-design/icons";
 
 export default function Email() {
     const [isPaginationChanged, setIsPaginationChanged] = useState(false);
     const [paginationConfig, setPaginationConfig] = useState({
         total: 0,
         defaultPageSize: 10,
-        pageSize: 5,
+        pageSize: 10,
         current: 1,
     });
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
     const onPaginationChange = (page: number, pageSize?: number) => {
         const newPaginationConfig = {...paginationConfig, current: page};
         if (pageSize) {
@@ -84,7 +89,32 @@ export default function Email() {
     ];
 
     useEffect(() => {
-        console.log(paginationConfig)
+        setLoading(true)
+        GetData(apis.FETCH_ALL_MAILS, {
+            page: paginationConfig.current - 1,
+            size: paginationConfig.pageSize
+        })
+            .then((result: any) => {
+                let responseJson = result;
+                setData(responseJson.content);
+                setPaginationConfig({
+                    ...paginationConfig,
+                    total: responseJson.totalElements,
+                    defaultPageSize: responseJson.size,
+                    pageSize: responseJson.size,
+                });
+                setLoading(false);
+            })
+            .catch((error) => {
+                setLoading(false);
+                notification.error({
+                    message: "Error",
+                    description: error.message || "Something went wrong",
+                    placement: "bottomRight",
+                    icon: <ExclamationCircleOutlined style={{color: "yellow"}}/>,
+                });
+                console.log(error);
+            });
     }, [isPaginationChanged]);
 
     return (
@@ -95,9 +125,9 @@ export default function Email() {
             <main className="bg-gray-100 min-h-screen">
                 <Header headerName={'Emails'}/>
                 <div className='p-4'>
-                    <Table dataSource={dataSource} columns={columns}
+                    <Table dataSource={data} columns={columns}
                            className="mt-0 mb-5"
-                        // loading={true}
+                           loading={loading}
                            pagination={{
                                ...paginationConfig,
                                defaultCurrent: 1,
