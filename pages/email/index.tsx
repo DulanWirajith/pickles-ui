@@ -82,7 +82,6 @@ export default function Email() {
                     placement: "bottomRight",
                     icon: <ExclamationCircleOutlined style={{color: "yellow"}}/>,
                 });
-                console.log(error);
             });
     }, [isPaginationChanged]);
 
