@@ -9,7 +9,7 @@ interface EmailState {
 
 // Define the initial state using that type
 const initialState: EmailState = {
-    lastUpdatedDate: moment().toISOString(),
+    lastUpdatedDate: moment().format('MMMM Do YYYY, h:mm:ss')
 }
 
 export const emailSlice = createSlice({
