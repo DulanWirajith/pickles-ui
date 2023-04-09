@@ -44,6 +44,8 @@ pnpm dev
 
 ![Screenshot](doc-images/Screenshot%202023-04-09%20at%2014.13.00.png)
 
+![Screenshot](doc-images/Screenshot%202023-04-09%20at%2014.24.19.png)
+
 ### Git Workflow
 
 ![Screenshot](doc-images/git-workflow.png)
