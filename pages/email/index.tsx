@@ -1,10 +1,13 @@
-import Head from "next/head";
-import {Header} from "@/components/organisms/header.organism";
 import {notification, Table, Tag} from "antd";
 import React, {useEffect, useState} from "react";
 import {apis} from "@/properties";
 import {GetData} from "@/api-service/get-data";
 import {ExclamationCircleOutlined} from "@ant-design/icons";
+import {useAppDispatch, useAppSelector} from "@/store/hooks";
+import {setLastUpdatedDate} from "@/store/email/email.slice";
+import moment from "moment/moment";
+import {Header} from "@/components/organisms/header.organism";
+import {Footer} from "@/components/organisms/footer.organism";
 
 export default function Email() {
     const [isPaginationChanged, setIsPaginationChanged] = useState(false);
@@ -16,6 +19,7 @@ export default function Email() {
     });
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
+
     const onPaginationChange = (page: number, pageSize?: number) => {
         const newPaginationConfig = {...paginationConfig, current: page};
         if (pageSize) {
@@ -24,6 +28,9 @@ export default function Email() {
         setIsPaginationChanged(!isPaginationChanged);
         setPaginationConfig(newPaginationConfig);
     };
+
+    const lastUpdatedDate = useAppSelector((state) => state.emails.lastUpdatedDate)
+    const dispatch = useAppDispatch()
 
     const columns = [
         {
@@ -80,6 +87,7 @@ export default function Email() {
                     pageSize: responseJson.size,
                 });
                 setLoading(false);
+                dispatch(setLastUpdatedDate(moment().format('MMMM Do YYYY, h:mm:ss')));
             })
             .catch((error) => {
                 setLoading(false);
@@ -94,23 +102,26 @@ export default function Email() {
 
     return (
         <>
-            <Head>
-                <title>Pickles UI</title>
-            </Head>
-            <main className="bg-gray-100 min-h-screen">
+            <div className="bg-gray-100 flex flex-col min-h-screen">
                 <Header headerName={'Emails'}/>
-                <div className='p-4'>
-                    <Table dataSource={data} columns={columns}
-                           className="mt-0 mb-5"
-                           loading={loading}
-                           pagination={{
-                               ...paginationConfig,
-                               defaultCurrent: 1,
-                               onChange: onPaginationChange,
-                           }}
-                    />;
-                </div>
-            </main>
+
+                <main className="flex-grow">
+                    <div className='p-4 flex-grow'>
+                        <Table dataSource={data} columns={columns}
+                               className="mt-0 mb-5"
+                               loading={loading}
+                               pagination={{
+                                   ...paginationConfig,
+                                   defaultCurrent: 1,
+                                   onChange: onPaginationChange,
+                               }}
+                        />;
+                    </div>
+                </main>
+
+                <Footer lastUpdatedDate={lastUpdatedDate}/>
+            </div>
+
         </>
     )
 }
