@@ -6,8 +6,7 @@ import {ExclamationCircleOutlined} from "@ant-design/icons";
 import {useAppDispatch, useAppSelector} from "@/store/hooks";
 import {setLastUpdatedDate} from "@/store/email/email.slice";
 import moment from "moment/moment";
-import {Header} from "@/components/organisms/header.organism";
-import {Footer} from "@/components/organisms/footer.organism";
+import {GridContent} from "@/components/templates/grid-content.template";
 
 export default function Email() {
     const [isPaginationChanged, setIsPaginationChanged] = useState(false);
@@ -102,26 +101,17 @@ export default function Email() {
 
     return (
         <>
-            <div className="bg-gray-100 flex flex-col min-h-screen">
-                <Header headerName={'Emails'}/>
-
-                <main className="flex-grow">
-                    <div className='p-4 flex-grow'>
-                        <Table dataSource={data} columns={columns}
-                               className="mt-0 mb-5"
-                               loading={loading}
-                               pagination={{
-                                   ...paginationConfig,
-                                   defaultCurrent: 1,
-                                   onChange: onPaginationChange,
-                               }}
-                        />;
-                    </div>
-                </main>
-
-                <Footer lastUpdatedDate={lastUpdatedDate}/>
-            </div>
-
+            <GridContent headerName="Emails" lastUpdatedDate={lastUpdatedDate}>
+                <Table dataSource={data} columns={columns}
+                       className="mt-0 mb-5"
+                       loading={loading}
+                       pagination={{
+                           ...paginationConfig,
+                           defaultCurrent: 1,
+                           onChange: onPaginationChange,
+                       }}
+                />;
+            </GridContent>
         </>
     )
 }
