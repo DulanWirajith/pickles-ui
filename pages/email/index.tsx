@@ -101,7 +101,7 @@ export default function Email() {
 
     return (
         <>
-            <GridContent headerName="Emails here" lastUpdatedDate={lastUpdatedDate}>
+            <GridContent headerName="Emails" lastUpdatedDate={lastUpdatedDate}>
                 <Table dataSource={data} columns={columns}
                        className="mt-0 mb-5"
                        loading={loading}
