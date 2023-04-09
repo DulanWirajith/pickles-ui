@@ -7,6 +7,7 @@ import {useAppDispatch, useAppSelector} from "@/store/hooks";
 import {setLastUpdatedDate} from "@/store/email/email.slice";
 import moment from "moment/moment";
 import {GridContent} from "@/components/templates/grid-content.template";
+import Pusher from "pusher-js";
 
 export default function Email() {
     const [isPaginationChanged, setIsPaginationChanged] = useState(false);
@@ -29,7 +30,41 @@ export default function Email() {
     };
 
     const lastUpdatedDate = useAppSelector((state) => state.emails.lastUpdatedDate)
-    const dispatch = useAppDispatch()
+    const dispatch = useAppDispatch();
+
+    // for pusher >>>>>>>>>>>>>>>
+    useEffect(() => {
+        const userId = "dulan";
+        const pusher = new Pusher(`${process.env.PUSHER_APP_KEY}`, {
+            cluster: `${process.env.PUSHER_APP_CLUSTER}`,
+            authEndpoint: apis.EMAIL_NOTIFICATION_AUTH,
+            auth: {
+                params: {
+                    userId, // Logged in user id. for auth purposes
+                },
+            },
+        });
+
+        const channel = pusher.subscribe(`presence-${userId}`);
+
+        channel.bind("pusher:subscription_succeeded", (members: any) => {
+            getEmails()
+        });
+
+        channel.bind("new_email_notification", async (data: any) => {
+            notification.info({
+                message: "New Email",
+                description: "New email has been received. Please fetch the latest data.",
+                placement: "bottomRight",
+                icon: <ExclamationCircleOutlined style={{color: "yellow"}}/>,
+            });
+        });
+
+        return () => {
+            pusher.unsubscribe(`presence-${userId}`);
+        };
+    }, []);
+    // for pusher <<<<<<<<<<<<<<<<
 
     const columns = [
         {
@@ -63,8 +98,8 @@ export default function Email() {
         },
     ];
 
-    useEffect(() => {
-        setLoading(true)
+    function getEmails() {
+        setLoading(true);
         GetData(apis.FETCH_ALL_MAILS, {
             page: paginationConfig.current - 1,
             size: paginationConfig.pageSize
@@ -94,9 +129,13 @@ export default function Email() {
                     message: "Error",
                     description: error.message || "Something went wrong",
                     placement: "bottomRight",
-                    icon: <ExclamationCircleOutlined style={{color: "yellow"}}/>,
+                    icon: <ExclamationCircleOutlined style={{color: "red"}}/>,
                 });
             });
+    }
+
+    useEffect(() => {
+        getEmails();
     }, [isPaginationChanged]);
 
     return (
