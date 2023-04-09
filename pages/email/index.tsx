@@ -54,7 +54,7 @@ export default function Email() {
         channel.bind("new_email_notification", async (data: any) => {
             notification.info({
                 message: "New Email",
-                description: "New email has been received. Please fetch the latest data.",
+                description: data.message || "New email request has been received. Please fetch the latest data.",
                 placement: "bottomRight",
                 icon: <ExclamationCircleOutlined style={{color: "yellow"}}/>,
             });
